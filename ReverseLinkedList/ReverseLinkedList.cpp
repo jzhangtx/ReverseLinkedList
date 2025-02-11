@@ -40,38 +40,38 @@ ListNode* GetListFromInput(ListNode** ppHead, int count)
     return pTail;
 }
 
-ListNode* ReverseNodes(ListNode* pNode)
+ListNode* ReverseNodes(ListNode* pNode, ListNode** pNewHead)
 {
     if (pNode->next == nullptr)
+    {
+        *pNewHead = pNode;
         return pNode;
+    }
     else
-        ReverseNodes(pNode->next)->next = pNode;
+        ReverseNodes(pNode->next, pNewHead)->next = pNode;
     return pNode;
 }
 
 ListNode* ReverseLinkedList(ListNode* pHead)
 {
-    ListNode* pNewHead = pHead;
-    while (pNewHead->next != nullptr)
-        pNewHead = pNewHead->next;
+    ListNode* pNewHead = nullptr;
 
-    ListNode* pNode = ReverseNodes(pHead);
+    ListNode* pNode = ReverseNodes(pHead, &pNewHead);
     pNode->next = nullptr;
     return pNewHead;
 }
 
-void PrintList(ListNode* pHead)
+std::ostream& operator <<(std::ostream& st, const ListNode* pNode)
 {
-    std::cout << pHead->data;
-    pHead = pHead->next;
-
-    while (pHead != nullptr)
+    st << pNode->data;
+    if (pNode->next != nullptr)
     {
-        std::cout << ", " << pHead->data ;
-        pHead = pHead->next;
+        st << " ," << pNode->next;
     }
+    else
+        st << std::endl;
 
-    std::cout << std::endl;
+    return st;
 }
 
 void FreeList(ListNode* pNode)
@@ -97,12 +97,12 @@ int main()
         ListNode* pOriginalTail = GetListFromInput(&pOrignalHead, count);
 
         std::cout << "Original: ";
-        PrintList(pOrignalHead);
+        std::cout << pOrignalHead;
 
         ListNode* pReversed = ReverseLinkedList(pOrignalHead);
 
         std::cout << "Reversed: ";
-        PrintList(pReversed);
+        std::cout << pReversed;
         FreeList(pReversed);
     }
 }
